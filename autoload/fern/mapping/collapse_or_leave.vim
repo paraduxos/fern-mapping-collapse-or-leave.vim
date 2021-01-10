@@ -7,6 +7,11 @@ function! fern#mapping#collapse_or_leave#init(disable_default_mappings) abort
   endif
 
   nmap <buffer><silent><expr> <Plug>(fern-action-collapse-or-leave) <SID>mapping()
+  nmap <buffer><silent> <Plug>(fern-action-leave-then-cd)
+        \ <Plug>(fern-action-leave)
+        \ <Plug>(fern-wait)
+        \ <Plug>(fern-action-cd:root)
+
 
   if !g:fern#mapping#collapse_or_leave#disable_default_mappings && !a:disable_default_mappings
     nmap <buffer><silent> h <Plug>(fern-action-collapse-or-leave)
@@ -29,9 +34,7 @@ function! s:mapping() abort
   let l:is_under_root = len(l:cursor_node.__key) - 1 <= len(l:root_node.__key)
   let l:is_leaf_or_collapsed = index([g:fern#STATUS_NONE, g:fern#STATUS_COLLAPSED], l:cursor_node.status) >= 0
   if l:is_root || (l:is_under_root && l:is_leaf_or_collapsed)
-    return "\<Plug>(fern-action-leave)
-            \<Plug>(fern-wait)
-            \<Plug>(fern-action-cd:root)"
+    return "\<Plug>(fern-action-leave-then-cd)"
   else
     return "\<Plug>(fern-action-collapse)"
   endif
